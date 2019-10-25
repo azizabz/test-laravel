@@ -2,6 +2,7 @@
 namespace App\Repositories\User;
 
 use App\Repositories\User\UserInterface as UserInterface;
+use App\Transformers\UserTransformer;
 
 use App\User;
 
@@ -19,6 +20,11 @@ class UserRepository implements UserInterface{
     }
     public function getAllPagination($page)
     {
-        return User::paginate($page);
+        $users = User::paginate($page);
+        return fractal()
+    		->collection($users)
+    		->transformWith(new UserTransformer)
+    		->toArray();
+        
     }
 }

@@ -17,3 +17,4 @@ $router->get('/', function () use ($router) {
 
 Route::get("/user",'UserController@index');
 Route::get("/user/{id}",'UserController@find');
+Route::post('/auth/register','AuthController@register');
