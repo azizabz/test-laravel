@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Pearl\RequestValidate\RequestAbstract;
 
-class Register extends RequestAbstract
+class Login extends RequestAbstract
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,9 +24,8 @@ class Register extends RequestAbstract
     public function rules(): array
     {
         return [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
+            'email' => 'required|string',
+            'password' => 'required|string',
         ];
     }
 

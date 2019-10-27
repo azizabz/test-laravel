@@ -82,6 +82,7 @@ $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(Spatie\Fractal\FractalServiceProvider::class);
 $app->register(Pearl\RequestValidate\RequestServiceProvider::class);
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(App\Repositories\User\UserRepoServiceProvider::class);
 $app->register(App\Repositories\Auth\AuthRepoServiceProvider::class);
 

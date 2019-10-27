@@ -14,10 +14,16 @@ class UserRepository implements UserInterface{
 	{
         $this->user = $user;
     }
+
     public function findById($id)
     {
-        return User::find($id);
+        $user = User::find($id);
+        return fractal()
+    		->collection($user)
+    		->transformWith(new UserTransformer)
+    		->toArray();
     }
+
     public function getAllPagination($page)
     {
         $users = User::paginate($page);
@@ -26,5 +32,10 @@ class UserRepository implements UserInterface{
     		->transformWith(new UserTransformer)
     		->toArray();
         
+    }
+
+    public function findProfile()
+    {
+        return response()->json(['user' => Auth::user()], 201);
     }
 }
