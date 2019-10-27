@@ -3,29 +3,27 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
+use Illuminate\Contracts\Support\Arrayable;
+use App\Repositories\Auth\AuthInterface as AuthInterface;
+
+Use App\User;
 
 class AuthController extends Controller
 {
+	private $authRepository;
+ 
+    public function __construct(AuthInterface $authRepository)
+    {
+        $this->authRepository = $authRepository;
+	}
+	
     public function register(Request $request, User $user){
-    	$this->validate($request, [
+		$this->validate($request, [
     		'name'	=> 'required',
     		'email'	=> 'required|email|unique:users',
     		'password' => 'required|min:6'
-    	]);
- 
-    	$user = $user->create([
-    		'name'	=> $request->name,
-    		'email'	=> $request->email,
-    		'password'	=> bcrypt($request->password),
-    		'api_token'	=> bcrypt($request->email)
-    	]);
- 
-    	$response = fractal()
-    		->item($user)
-    		->transformWith(new UserTransformer)
-    		->toArray();
- 
-    	return response()->json($response, 201);
+		]);
+		
+		return $this->authRepository->createUser($request, $user);
     }
 }

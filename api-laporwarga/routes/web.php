@@ -15,6 +15,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-Route::get("/user",'UserController@index');
-Route::get("/user/{id}",'UserController@find');
+Route::get("/users",'UserController@index');
+Route::get("/users/{id}",'UserController@find');
 Route::post('/auth/register','AuthController@register');

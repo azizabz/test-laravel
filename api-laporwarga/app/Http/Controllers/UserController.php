@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\User\UserInterface as UserInterface;
-use App\Transformers\UserTransformer;
 
 class UserController extends Controller
 {
