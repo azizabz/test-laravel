@@ -37,20 +37,20 @@ class AuthRepository implements AuthInterface
     	return response()->json($response, 201);
     }
 
-    public function loginUser(Request $request, User $user){
+    // public function loginUser(Request $request, User $user){
         
-    	if(!Auth::guard('web')->attempt(['email'=>$request->email, 'password'=>$request->password])){
-    		return response()->json(['error'=>'Wrong Credentials'], 401);
-    	}
+    // 	if(!Auth::guard('web')->attempt(['email'=>$request->email, 'password'=>$request->password])){
+    // 		return response()->json(['error'=>'Wrong Credentials'], 401);
+    // 	}
  
-    	$user = $user->find(Auth::user()->id);
+    // 	$user = $user->find(Auth::user()->id);
  
-    	return fractal()
-    		->item($user)
-            ->transformWith(new UserTransformer)
-            ->addMeta([
-                'token'=>$user->api_token
-            ])
-    		->toArray();
-	}
+    // 	return fractal()
+    // 		->item($user)
+    //         ->transformWith(new UserTransformer)
+    //         ->addMeta([
+    //             'token'=>$user->api_token
+    //         ])
+    // 		->toArray();
+	// }
 }

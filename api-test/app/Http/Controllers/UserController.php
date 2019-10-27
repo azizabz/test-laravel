@@ -3,8 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use League\Fractal\Resource\Collection;
-use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use App\Repositories\User\UserInterface as UserInterface;
 
 class UserController extends Controller
@@ -25,5 +23,4 @@ class UserController extends Controller
     {
         return $user = $this->userRepository->findById($id);
     }
-
 }
