@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Repositories\User\UserInterface as UserInterface;
 
 class UserController extends Controller
 {
     private $userRepository;
+
     /**
      * Instantiate a new UserController instance.
      *
@@ -32,6 +32,6 @@ class UserController extends Controller
 
     public function profile()
     {
-        return response()->json(['user' => Auth::user()], 201);
+        return $this->userRepository->findProfile();
     }
 }

@@ -21,21 +21,7 @@ class AuthRepository implements AuthInterface
     }
 
     public function createUser(Request $request, User $user){
-
-            // $user = new User;
-            // $user->name = $request->input('name');
-            // $user->email = $request->input('email');
-            // $plainPassword = $request->input('password');
-			// $user->password = app('hash')->make($plainPassword);
-			// $user->api_token = app('hash')->make($user->email);
-
-            // $user->save();
-
-            // //return successful response
-            // return response()->json(['user' => $user, 'message' => 'CREATED'], 201);
-
         
-    	
     	$user = User::create([
     		'name'	=> $request->name,
     		'email'	=> $request->email,
@@ -53,17 +39,33 @@ class AuthRepository implements AuthInterface
 
     public function loginUser(Request $request, User $user)
     {
-        if (!Auth::attempt(['email'=>$request->email, 'password'=>$request->password])){
-    		return response()->json(['error'=>'Wrong Credentials'], 401);
-    	}
-		$user = $user->find(Auth::user()->id);
-		
-		return fractal()
-    		->item($user)
-			->transformWith(new UserTransformer)
-			->addMeta([
-				'token'=>$user->api_token
-			])
-    		->toArray();
+        $credentials = $request->only(['email', 'password']);
+
+        if (! $token = Auth::attempt($credentials)) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        return $this->respondWithToken($token);
+	}
+
+	public function refreshToken()
+    {
+        return $this->respondWithToken(Auth::refresh());
+    }
+	
+	/**
+     * Get the token array structure.
+     *
+     * @param  string $token
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+	protected function respondWithToken($token)
+    {
+        return response()->json([
+            'token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => Auth::factory()->getTTL() * 60
+        ], 200);
     }
 }

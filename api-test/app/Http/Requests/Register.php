@@ -26,7 +26,7 @@ class Register extends RequestAbstract
         return [
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed',
+            'password' => 'required|string|min:8|confirmed',
         ];
     }
 

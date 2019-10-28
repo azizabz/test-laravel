@@ -16,6 +16,7 @@ class AuthController extends Controller
  
     public function __construct(AuthInterface $authRepository)
     {
+        $this->middleware('auth', ['except' => ['register', 'login']]);
         $this->authRepository = $authRepository;
     }
     
@@ -42,20 +43,38 @@ class AuthController extends Controller
     {
 
         return $this->authRepository->loginUser($request, $user);
-
-        //validate incoming request 
-        // $this->validate($request, [
-        //     'email' => 'required|string',
-        //     'password' => 'required|string',
-        // ]);
-
-        // $credentials = $request->only(['email', 'password']);
-
-        // if (! $token = Auth::attempt($credentials)) {
-        //     return response()->json(['message' => 'Unauthorized'], 401);
-        // }
-
-        // return $this->respondWithToken($token);
+        
+    }
     
+    /**
+     * Get the authenticated User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function profile()
+    {
+        return response()->json(['user' => Auth::user()], 200);
+    }
+
+    /**
+     * Log the user out (Invalidate the token).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function logout()
+    {
+        Auth::logout();
+
+        return response()->json(['message' => 'Successfully logged out'], 200);
+    }
+
+    /**
+     * Refresh a token.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function refresh()
+    {
+        return $this->authRepository->refreshToken();
     }
 }
