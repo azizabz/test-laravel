@@ -1,12 +1,12 @@
 <?php
-namespace App\Repositories\User;
+namespace App\Repositories\Report;
 use Illuminate\Support\ServiceProvider;
 
-class UserRepoServiceProvider extends ServiceProvider{
+class ReportRepoServiceProvider extends ServiceProvider{
     public function boot(){}
 
     public function register(){
-        $this->app->bind('App\Repositories\User\UserInterface', 
-        'App\Repositories\User\UserRepository');
+        $this->app->bind('App\Repositories\Report\ReportInterface', 
+        'App\Repositories\Report\ReportRepository');
     }
 }

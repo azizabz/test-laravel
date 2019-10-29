@@ -52,6 +52,6 @@ class UserRepository implements UserInterface
 
     public function findProfile()
     {
-        return response()->json(['user' => Auth::user()], 201);
+        return response()->json(['user' => Auth::user()], 200);
     }
 }

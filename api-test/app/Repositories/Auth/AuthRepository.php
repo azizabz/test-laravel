@@ -3,38 +3,41 @@
 namespace App\Repositories\Auth;
 
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Auth;
-
 use App\Repositories\Auth\AuthInterface as AuthInterface;
+use League\Fractal\Manager;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\Item;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use App\Transformers\UserTransformer;
 
 use App\User;
 
 class AuthRepository implements AuthInterface
 {
+    private $fractal;
     protected $user;
 
-	public function __construct(User $user)
+	public function __construct(Manager $fractal, UserTransformer $userTransformer, User $user)
 	{
+        $this->fractal = $fractal;
+        $this->userTransformer = $userTransformer;
         $this->user =  $user;
     }
 
-    public function createUser(Request $request, User $user){
+    public function createUser(Request $request){
         
     	$user = User::create([
     		'name'	=> $request->name,
     		'email'	=> $request->email,
-    		'password'	=> app('hash')->make($request->password),
-    		'api_token'	=> app('hash')->make($request->email)
+    		'password'	=> app('hash')->make($request->password)
     	]);
  
-    	$response = fractal()
-    		->item($user)
-    		->transformWith(new UserTransformer)
-    		->toArray();
+    	$user = new Item($user, $this->userTransformer);
+        $user = $this->fractal->createData($user);
+
+        return $user->toArray();
  
-    	return response()->json($response, 201);
     }
 
     public function loginUser(Request $request, User $user)

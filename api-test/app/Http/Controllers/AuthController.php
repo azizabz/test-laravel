@@ -26,10 +26,10 @@ class AuthController extends Controller
      * @param  Request  $request
      * @return Response
      */
-    public function register(Register $request, User $user)
+    public function register(Register $request)
     {
 
-		return $this->authRepository->createUser($request, $user);
+		return $this->authRepository->createUser($request);
     
     }
 

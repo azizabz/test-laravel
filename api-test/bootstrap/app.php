@@ -85,6 +85,7 @@ $app->register(Pearl\RequestValidate\RequestServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(App\Repositories\User\UserRepoServiceProvider::class);
 $app->register(App\Repositories\Auth\AuthRepoServiceProvider::class);
+$app->register(App\Repositories\Report\ReportRepoServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

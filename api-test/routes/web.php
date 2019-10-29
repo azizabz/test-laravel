@@ -25,6 +25,13 @@ $router->group(['prefix' => 'api'], function () use ($router) {
     $router->post('login', 'AuthController@login');
     $router->post('logout', 'AuthController@logout');
     $router->post('refresh', 'AuthController@refresh');
-    $router->post('profile', 'AuthController@profile');
- 
+    $router->get('profile', 'AuthController@profile');
+    
+    $router->get('reports', 'ReportsController@index');
+    $router->get('reports/{id}', 'ReportsController@show');
+    $router->post('reports/{id}', 'ReportsController@myreport');
+    $router->post('createreport', 'ReportsController@store');
+    $router->put('reports/{id}', 'ReportsController@update');
+    $router->delete('reports/{id}', 'ReportsController@destroy');
+
  });

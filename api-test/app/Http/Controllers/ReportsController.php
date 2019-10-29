@@ -4,9 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Report;
 use Illuminate\Http\Request;
+use App\Repositories\Report\ReportInterface as ReportInterface;
 
 class ReportsController extends Controller
 {
+    private $reportRepository;
+
+    /**
+     * Instantiate a new UserController instance.
+     *
+     * @return void
+     */
+    public function __construct(ReportInterface $reportRepository)
+    {
+        $this->middleware('auth');
+
+        $this->reportRepository = $reportRepository;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,17 +29,7 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return $this->reportRepository->getAllPagination(5);
     }
 
     /**
@@ -35,7 +40,7 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $this->reportRepository->createReport($request);
     }
 
     /**
@@ -44,20 +49,14 @@ class ReportsController extends Controller
      * @param  \App\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function show(Report $report)
+    public function show($id)
     {
-        //
+        return $this->reportRepository->findReportById($id);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Report  $report
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Report $report)
+    public function myreport()
     {
-        //
+        return $this->reportRepository->findMyReports(5);
     }
 
     /**
@@ -67,9 +66,9 @@ class ReportsController extends Controller
      * @param  \App\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Report $report)
+    public function update(Request $request, $id)
     {
-        //
+        return $this->reportRepository->editReport($request, $id);
     }
 
     /**
@@ -78,8 +77,8 @@ class ReportsController extends Controller
      * @param  \App\Report  $report
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Report $report)
+    public function destroy($id)
     {
-        //
+        return $this->reportRepository->deleteReport($id);
     }
 }
