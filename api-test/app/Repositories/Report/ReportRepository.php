@@ -83,8 +83,8 @@ class ReportRepository implements ReportInterface
             'id_kategori' => $request->id_kategori,
             'user_id' => $user,
             'status_pelapor' => $request->status_pelapor,
-            'lokasi_latitude' => $request->lat,
-            'lokasi_longitude' => $request->lon,
+            'lat' => $request->lat,
+            'lon' => $request->lon,
             'status_laporan' => 'lapor',
             'tgl_kirim' => date('Y-m-d')
         ]);

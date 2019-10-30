@@ -12,7 +12,7 @@ class Report extends Model
      * @var array
      */
     protected $fillable = [
-        'foto_laporan', 'judul_laporan', 'isi_laporan', 'id_kategori', 'user_id', 'status_pelapor', 'lokasi_latitude', 'lokasi_longitude', 'status_laporan', 'tgl_kirim',
+        'foto_laporan', 'judul_laporan', 'isi_laporan', 'id_kategori', 'user_id', 'status_pelapor', 'lat', 'lon', 'status_laporan', 'tgl_kirim',
     ];
 
     public function user()

@@ -21,7 +21,7 @@ class ReportTransformer extends TransformerAbstract
             'lokasi_latitude' => $report->lat,
             'lokasi_longitude' => $report->lon,
             'status_laporan' => $report->status_laporan,
-            'tanggal_dibuat' => $report->created_at
+            'tanggal_dibuat' => $report->tgl_kirim
         ];
     }
 }
