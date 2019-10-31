@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\User;
 
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,8 @@ class UserRepository implements UserInterface
     private $fractal;
     protected $user;
 
-	public function __construct(Manager $fractal, UserTransformer $userTransformer, User $user)
-	{
+    public function __construct(Manager $fractal, UserTransformer $userTransformer, User $user)
+    {
         $this->fractal = $fractal;
         $this->userTransformer = $userTransformer;
         $this->user = $user;
@@ -28,26 +29,20 @@ class UserRepository implements UserInterface
         try {
             $user = User::findOrFail($id);
             $user = new Item($user, $this->userTransformer);
-            $user = $this->fractal->createData($user);
 
-            return $user->toArray();
-                
+            return $user;
         } catch (\Exception $e) {
-
-            return response()->json(['message' => 'User not found!'], 404);
+            throw new \App\Exceptions\BaseException('User not found!');
         }
     }
 
     public function getAllPagination($page)
     {
         $usersPaginator = User::paginate($page);
-        // $users = User::all();
         $users = new Collection($usersPaginator->items(), $this->userTransformer);
         $users->setPaginator(new IlluminatePaginatorAdapter($usersPaginator));
-        $users = $this->fractal->createData($users);
 
-        return $users->toArray();
-        
+        return $users;
     }
 
     public function findProfile()

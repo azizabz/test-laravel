@@ -8,7 +8,7 @@ class UserController extends Controller
 {
     private $userRepository;
 
-    /**
+    /** 
      * Instantiate a new UserController instance.
      *
      * @return void
@@ -22,12 +22,16 @@ class UserController extends Controller
 
     public function index()
     {
-        return $this->userRepository->getAllPagination(2);
+        $users = $this->userRepository->getAllPagination(2);
+
+        return $this->responseSuccess($users);
     }
 
     public function find($id)
     {
-        return $this->userRepository->findById($id);
+        $user = $this->userRepository->findById($id);
+
+        return $this->responseSuccess($user);
     }
 
     public function profile()

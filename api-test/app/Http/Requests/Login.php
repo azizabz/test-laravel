@@ -24,8 +24,8 @@ class Login extends RequestAbstract
     public function rules(): array
     {
         return [
-            'email' => 'required|string',
-            'password' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
         ];
     }
 
@@ -36,8 +36,6 @@ class Login extends RequestAbstract
      */
     public function messages(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 }

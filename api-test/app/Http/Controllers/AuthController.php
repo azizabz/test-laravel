@@ -13,24 +13,24 @@ use  App\User;
 class AuthController extends Controller
 {
     private $authRepository;
- 
+
     public function __construct(AuthInterface $authRepository)
     {
         $this->middleware('auth', ['except' => ['register', 'login']]);
         $this->authRepository = $authRepository;
     }
-    
+
     /**
      * Store a new user.
      *
-     * @param  Request  $request
+     * @param  Request  $request 
      * @return Response
      */
     public function register(Register $request)
     {
+        $user = $this->authRepository->createUser($request);
 
-		return $this->authRepository->createUser($request);
-    
+        return $this->responseSuccess($user);
     }
 
     /**
@@ -41,11 +41,9 @@ class AuthController extends Controller
      */
     public function login(Login $request, User $user)
     {
-
         return $this->authRepository->loginUser($request, $user);
-        
     }
-    
+
     /**
      * Get the authenticated User.
      *

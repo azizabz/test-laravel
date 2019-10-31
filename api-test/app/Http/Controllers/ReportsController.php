@@ -29,7 +29,9 @@ class ReportsController extends Controller
      */
     public function index()
     {
-        return $this->reportRepository->getAllPagination(5);
+        $reports = $this->reportRepository->getAllPagination(5);
+
+        return $this->responseSuccess($reports);
     }
 
     /**
@@ -40,7 +42,9 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
-        return $this->reportRepository->createReport($request);
+        $createReport = $this->reportRepository->createReport($request);
+
+        return $this->responseSuccess($createReport);
     }
 
     /**
@@ -51,12 +55,16 @@ class ReportsController extends Controller
      */
     public function show($id)
     {
-        return $this->reportRepository->findReportById($id);
+        $report = $this->reportRepository->findReportById($id);
+
+        return $this->responseSuccess($report);
     }
 
-    public function myreport()
+    public function myreports()
     {
-        return $this->reportRepository->findMyReports(5);
+        $myReports = $this->reportRepository->findMyReports(5);
+
+        return $this->responseSuccess($myReports);
     }
 
     /**
@@ -68,7 +76,9 @@ class ReportsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return $this->reportRepository->editReport($request, $id);
+        $editReport = $this->reportRepository->editReport($request, $id);
+
+        return $this->responseSuccess($editReport);
     }
 
     /**

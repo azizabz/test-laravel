@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Report;
 
 use Illuminate\Support\Facades\Auth;
@@ -19,8 +20,8 @@ class ReportRepository implements ReportInterface
     protected $report;
     protected $user;
 
-	public function __construct(Manager $fractal, ReportTransformer $reportTransformer, Report $report, User $user)
-	{
+    public function __construct(Manager $fractal, ReportTransformer $reportTransformer, Report $report, User $user)
+    {
         $this->fractal = $fractal;
         $this->reportTransformer = $reportTransformer;
         $this->report = $report;
@@ -32,13 +33,9 @@ class ReportRepository implements ReportInterface
         try {
             $report = Report::findOrFail($id);
             $report = new Item($report, $this->reportTransformer);
-            $report = $this->fractal->createData($report);
-
-            return $report->toArray();
-                
+            return $report;
         } catch (\Exception $e) {
-
-            return response()->json(['message' => 'Report not found!'], 404);
+            throw new \App\Exceptions\BaseException('Report not found!');
         }
     }
 
@@ -48,28 +45,20 @@ class ReportRepository implements ReportInterface
         $reportsPaginator = Report::paginate($page);
         $reports = new Collection($reportsPaginator->items(), $this->reportTransformer);
         $reports->setPaginator(new IlluminatePaginatorAdapter($reportsPaginator));
-        $reports = $this->fractal->createData($reports);
-
-        return $reports->toArray();
-        
+        return $reports;
     }
 
     public function findMyReports($page)
     {
-        try{
-        $user = User::find(Auth::user()->id);
-        $reportsPaginator = $user->reports;
-        $reportsPaginator = Report::paginate($page)->orderBy('id', 'desc');
-        $reports = new Collection($reportsPaginator->items(), $this->reportTransformer);
-        $reports->setPaginator(new IlluminatePaginatorAdapter($reportsPaginator));
-        $reports = $this->fractal->createData($reports);
-
-        return $reports->toArray();
-        
+        try {
+            $user = User::find(Auth::user()->id);
+            $reportsPaginator = $user->reports;
+            $reportsPaginator = Report::paginate($page)->orderBy('id', 'desc');
+            $reports = new Collection($reportsPaginator->items(), $this->reportTransformer);
+            $reports->setPaginator(new IlluminatePaginatorAdapter($reportsPaginator));
+            return $reports;
         } catch (\Exception $e) {
-
-        return response()->json(['message' => 'You have not made a report yet!'], 404);
-        
+            throw new \App\Exceptions\BaseException('You have not made a report yet!');
         }
     }
 
@@ -77,7 +66,7 @@ class ReportRepository implements ReportInterface
     {
         $user = Auth::user()->id;
         $report = Report::create([
-    		'foto_laporan' => $request->foto_laporan,
+            'foto_laporan' => $request->foto_laporan,
             'judul_laporan' => $request->judul_laporan,
             'isi_laporan' => $request->isi_laporan,
             'id_kategori' => $request->id_kategori,
@@ -88,56 +77,50 @@ class ReportRepository implements ReportInterface
             'status_laporan' => 'lapor',
             'tgl_kirim' => date('Y-m-d')
         ]);
-        
+
         $report = new Item($report, $this->reportTransformer);
-        $report = $this->fractal->createData($report);
-
-        return $report->toArray();
-
+        return $report;
     }
 
     public function editReport(Request $request, $id)
     {
         try {
-        $user = Auth::user()->id;
-        $report = Report::where('id', $id)->first();
-        $report->foto_laporan = $request->foto_laporan;
-        $report->judul_laporan = $request->judul_laporan;
-        $report->isi_laporan = $request->isi_laporan;
-        $report->id_kategori = $request->id_kategori;
-        $report->user_id = $user;
-        $report->status_pelapor = $request->status_pelapor;
-        $report->lat = substr($request->lat,0,17);
-        $report->lon = substr($request->lon,0,16);
-        $report->status_laporan = 'lapor';
-        $report->tgl_kirim = date('Y-m-d');
+            $user = Auth::user()->id;
+            $report = Report::where('id', $id)->first();
+            $report->foto_laporan = $request->foto_laporan;
+            $report->judul_laporan = $request->judul_laporan;
+            $report->isi_laporan = $request->isi_laporan;
+            $report->id_kategori = $request->id_kategori;
+            $report->user_id = $user;
+            $report->status_pelapor = $request->status_pelapor;
+            $report->lat = substr($request->lat, 0, 17);
+            $report->lon = substr($request->lon, 0, 16);
+            $report->status_laporan = 'lapor';
+            $report->tgl_kirim = date('Y-m-d');
 
-        $report->save();
+            $report->save();
 
-        $report = new Item($report, $this->reportTransformer);
-        $report = $this->fractal->createData($report);
-
-        return $report->toArray();
-
+            $report = new Item($report, $this->reportTransformer);
+            return $report;
         } catch (\Exception $e) {
-
-        return response()->json(['message' => 'Report not found!'], 404);
-    
+            throw new \App\Exceptions\BaseException('Report not found!');
         }
     }
 
     public function deleteReport($id)
     {
-        try{
-        $report = Report::where('id', $id)->first();
-        $report->delete();
+        try {
+            $report = Report::where('id', $id)->first();
+            $report->delete();
 
-        return response()->json(['message' => 'Report deleted successfully!'], 200);
-        
+            return response()->json([
+                'status' => [
+                    'code' => 1,
+                    'message' => 'Report deleted successfully!'
+                ]
+            ], 200);
         } catch (\Exception $e) {
-
-        return response()->json(['message' => 'Report not found!'], 404);
-    
+            throw new \App\Exceptions\BaseException('Report not found!');
         }
     }
 }

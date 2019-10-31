@@ -18,52 +18,51 @@ class AuthRepository implements AuthInterface
     private $fractal;
     protected $user;
 
-	public function __construct(Manager $fractal, UserTransformer $userTransformer, User $user)
-	{
+    public function __construct(Manager $fractal, UserTransformer $userTransformer, User $user)
+    {
         $this->fractal = $fractal;
         $this->userTransformer = $userTransformer;
         $this->user =  $user;
     }
 
-    public function createUser(Request $request){
-        
-    	$user = User::create([
-    		'name'	=> $request->name,
-    		'email'	=> $request->email,
-    		'password'	=> app('hash')->make($request->password)
-    	]);
- 
-    	$user = new Item($user, $this->userTransformer);
-        $user = $this->fractal->createData($user);
+    public function createUser(Request $request)
+    {
 
-        return $user->toArray();
- 
+        $user = User::create([
+            'name'    => $request->name,
+            'email'    => $request->email,
+            'password'    => app('hash')->make($request->password)
+        ]);
+
+        $user = new Item($user, $this->userTransformer);
+
+        return $user;
     }
 
     public function loginUser(Request $request, User $user)
     {
         $credentials = $request->only(['email', 'password']);
 
-        if (! $token = Auth::attempt($credentials)) {
+        if (!$token = Auth::attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
-	}
+    }
 
-	public function refreshToken()
+    public function refreshToken()
     {
         return $this->respondWithToken(Auth::refresh());
     }
-	
-	/**
+
+    /**
      * Get the token array structure.
      *
      * @param  string $token
      *
      * @return \Illuminate\Http\JsonResponse
      */
-	protected function respondWithToken($token)
+    protected function respondWithToken($token)
     {
         return response()->json([
             'token' => $token,
