@@ -1,21 +1,13 @@
 <?php
-/*
- * This file is part of the League\Fractal package.
- *
- * (c) Phil Sturgeon <me@philsturgeon.uk>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
 namespace App\Serializers;
 
-use League\Fractal\Serializer\DataArraySerializer;
+use League\Fractal\Serializer\SerializerAbstract;
 use League\Fractal\Pagination\CursorInterface;
 use League\Fractal\Pagination\PaginatorInterface;
 use League\Fractal\Resource\ResourceInterface;
 
-abstract class CustomSerializer extends DataArraySerializer
+class CustomSerializer extends SerializerAbstract
 {
     /**
      * Serialize a collection.
@@ -25,7 +17,7 @@ abstract class CustomSerializer extends DataArraySerializer
      *
      * @return array
      */
-    public function collection($resourceKey, array $data, $message)
+    public function collection($resourceKey, array $data)
     {
         return [
             'status' => [
@@ -35,7 +27,6 @@ abstract class CustomSerializer extends DataArraySerializer
             'data' => $data
         ];
     }
-
     /**
      * Serialize an item.
      *
@@ -59,7 +50,10 @@ abstract class CustomSerializer extends DataArraySerializer
      *
      * @return array
      */
-    abstract public function null();
+    public function null()
+    {
+        return [];
+    }
     /**
      * Serialize the included data.
      *
@@ -68,7 +62,11 @@ abstract class CustomSerializer extends DataArraySerializer
      *
      * @return array
      */
-    abstract public function includedData(ResourceInterface $resource, array $data);
+    public function includedData(ResourceInterface $resource, array $data)
+    {
+        return $data;
+    }
+
     /**
      * Serialize the meta.
      *
@@ -76,7 +74,14 @@ abstract class CustomSerializer extends DataArraySerializer
      *
      * @return array
      */
-    abstract public function meta(array $meta);
+    public function meta(array $meta)
+    {
+        if (empty($meta)) {
+            return [];
+        }
+
+        return ['meta' => $meta];
+    }
     /**
      * Serialize the paginator.
      *
@@ -84,7 +89,32 @@ abstract class CustomSerializer extends DataArraySerializer
      *
      * @return array
      */
-    abstract public function paginator(PaginatorInterface $paginator);
+    public function paginator(PaginatorInterface $paginator)
+    {
+        $currentPage = (int) $paginator->getCurrentPage();
+        $lastPage = (int) $paginator->getLastPage();
+
+        $pagination = [
+            'total' => (int) $paginator->getTotal(),
+            'count' => (int) $paginator->getCount(),
+            'per_page' => (int) $paginator->getPerPage(),
+            'current_page' => $currentPage,
+            'total_pages' => $lastPage,
+        ];
+
+        $pagination['links'] = [];
+
+        if ($currentPage > 1) {
+            $pagination['links']['previous'] = $paginator->getUrl($currentPage - 1);
+        }
+
+        if ($currentPage < $lastPage) {
+            $pagination['links']['next'] = $paginator->getUrl($currentPage + 1);
+        }
+
+        return ['pagination' => $pagination];
+    }
+
     /**
      * Serialize the cursor.
      *
@@ -92,8 +122,18 @@ abstract class CustomSerializer extends DataArraySerializer
      *
      * @return array
      */
+    public function cursor(CursorInterface $cursor)
+    {
+        $cursor = [
+            'current' => $cursor->getCurrent(),
+            'prev' => $cursor->getPrev(),
+            'next' => $cursor->getNext(),
+            'count' => (int) $cursor->getCount(),
+        ];
 
-    abstract public function cursor(CursorInterface $cursor);
+        return ['cursor' => $cursor];
+    }
+
     public function mergeIncludes($transformedData, $includedData)
     {
         // If the serializer does not want the includes to be side-loaded then

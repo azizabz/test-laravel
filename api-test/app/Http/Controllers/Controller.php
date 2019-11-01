@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use League\Fractal\Manager;
 use League\Fractal\Resource\ResourceAbstract;
+use App\Serializers\CustomSerializer;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
 class Controller extends BaseController
@@ -33,6 +34,7 @@ class Controller extends BaseController
     protected function buildResourceResponse(ResourceAbstract $resource, $status = 200, array $headers = [])
     {
         $fractal = new Manager();
+        $fractal->setSerializer(new CustomSerializer());
 
         return response()->json(
             $fractal->createData($resource)->toArray(),

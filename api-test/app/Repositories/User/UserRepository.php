@@ -4,7 +4,6 @@ namespace App\Repositories\User;
 
 use Illuminate\Support\Facades\Auth;
 use App\Repositories\User\UserInterface as UserInterface;
-use League\Fractal\Manager;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\Item;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
@@ -14,12 +13,10 @@ use App\User;
 
 class UserRepository implements UserInterface
 {
-    private $fractal;
     protected $user;
 
-    public function __construct(Manager $fractal, UserTransformer $userTransformer, User $user)
+    public function __construct(UserTransformer $userTransformer, User $user)
     {
-        $this->fractal = $fractal;
         $this->userTransformer = $userTransformer;
         $this->user = $user;
     }
