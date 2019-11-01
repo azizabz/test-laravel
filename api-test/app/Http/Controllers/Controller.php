@@ -35,6 +35,9 @@ class Controller extends BaseController
     {
         $fractal = new Manager();
         $fractal->setSerializer(new CustomSerializer());
+        if (isset($_GET['include'])) {
+            $fractal->parseIncludes($_GET['include']);
+        }
 
         return response()->json(
             $fractal->createData($resource)->toArray(),

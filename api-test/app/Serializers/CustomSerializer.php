@@ -138,10 +138,15 @@ class CustomSerializer extends SerializerAbstract
     {
         // If the serializer does not want the includes to be side-loaded then
         // the included data must be merged with the transformed data.
-        if (!$this->sideloadIncludes()) {
-            return array_merge($transformedData, $includedData);
-        }
-        return $transformedData;
+        $includedData = array_map(function ($include) {
+            if (isset($include['data'])) {
+                return $include['data'];
+            }
+
+            return $include;
+        }, $includedData);
+
+        return parent::mergeIncludes($transformedData, $includedData);
     }
     /**
      * Indicates if includes should be side-loaded.

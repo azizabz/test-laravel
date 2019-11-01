@@ -4,9 +4,15 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Report;
+use App\Transformers\UserTransformer;
+use App\Transformers\CategoryTransformer;
 
 class ReportTransformer extends TransformerAbstract
 {
+    protected $availableIncludes = [
+        'pelapor'
+    ];
+
     /**
      * A Fractal transformer.
      *
@@ -23,5 +29,13 @@ class ReportTransformer extends TransformerAbstract
             'status_laporan' => $report->status_laporan,
             'tanggal_dibuat' => $report->tgl_kirim
         ];
+    }
+
+    public function includePelapor(Report $report)
+    {
+        // $report = Report::all();
+        $user = $report->user;
+
+        return $this->item($user, new UserTransformer);
     }
 }
